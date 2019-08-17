@@ -33,7 +33,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     
     // 効果音
     let sound = SKAction.playSoundFileNamed("cancel3.mp3", waitForCompletion: true)
-    
+    let sound2 = SKAction.playSoundFileNamed("cursor7", waitForCompletion: true)
     
     // SKView上にシーンが表示された時に呼ばれるメソッド
     override func didMove(to view: SKView) {
@@ -321,6 +321,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
             bird.physicsBody?.collisionBitMask = groundCategory
             
             let roll = SKAction.rotate(byAngle: CGFloat(Double.pi) * CGFloat(bird.position.y) * 0.01, duration:1)
+            self.run(sound2)
             bird.run(roll, completion:{
                 self.bird.speed = 0
             })
