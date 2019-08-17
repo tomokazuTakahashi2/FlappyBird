@@ -32,7 +32,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     var itemScoreLabelNode: SKLabelNode!
     
     // 効果音
-    let sound = SKAction.playSoundFileNamed("cencel.mp3", waitForCompletion: true)
+    let sound = SKAction.playSoundFileNamed("cancel3.mp3", waitForCompletion: true)
     
     
     // SKView上にシーンが表示された時に呼ばれるメソッド

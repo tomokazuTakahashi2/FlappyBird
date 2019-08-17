@@ -13,7 +13,7 @@
 		64267CBD2304EC9D0032E739 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 64267CBC2304EC9D0032E739 /* Assets.xcassets */; };
 		64267CC02304EC9D0032E739 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 64267CBE2304EC9D0032E739 /* LaunchScreen.storyboard */; };
 		64267CC82304FB160032E739 /* Game Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64267CC72304FB160032E739 /* Game Scene.swift */; };
-		64267CCC2307B1870032E739 /* cancel3.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 64267CCB2307B1870032E739 /* cancel3.mp3 */; };
+		645FDDB92307F038005E203E /* cancel3.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 645FDDB82307F038005E203E /* cancel3.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,7 +25,7 @@
 		64267CBF2304EC9D0032E739 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		64267CC12304EC9D0032E739 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		64267CC72304FB160032E739 /* Game Scene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Game Scene.swift"; sourceTree = "<group>"; };
-		64267CCB2307B1870032E739 /* cancel3.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = cancel3.mp3; sourceTree = "<group>"; };
+		645FDDB82307F038005E203E /* cancel3.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = cancel3.mp3; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,7 +65,7 @@
 				64267CBE2304EC9D0032E739 /* LaunchScreen.storyboard */,
 				64267CC12304EC9D0032E739 /* Info.plist */,
 				64267CC72304FB160032E739 /* Game Scene.swift */,
-				64267CCB2307B1870032E739 /* cancel3.mp3 */,
+				645FDDB82307F038005E203E /* cancel3.mp3 */,
 			);
 			path = "Flappy Bird";
 			sourceTree = "<group>";
@@ -130,7 +130,7 @@
 			files = (
 				64267CC02304EC9D0032E739 /* LaunchScreen.storyboard in Resources */,
 				64267CBD2304EC9D0032E739 /* Assets.xcassets in Resources */,
-				64267CCC2307B1870032E739 /* cancel3.mp3 in Resources */,
+				645FDDB92307F038005E203E /* cancel3.mp3 in Resources */,
 				64267CBB2304EC9D0032E739 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
