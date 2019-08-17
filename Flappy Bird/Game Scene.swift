@@ -12,6 +12,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     
     var scrollNode:SKNode!
     var wallNode:SKNode!
+    var mimizuNode:SKNode!
     var bird:SKSpriteNode!
     
     // 衝突判定カテゴリー
@@ -19,6 +20,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     let groundCategory: UInt32 = 1 << 1     // 0...00010
     let wallCategory: UInt32 = 1 << 2       // 0...00100
     let scoreCategory: UInt32 = 1 << 3      // 0...01000
+    let mimizuCategory: UInt32 = 1 << 4      // 0...10000
     
     
     // スコア用
@@ -26,8 +28,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     var scoreLabelNode:SKLabelNode!
     var bestScoreLabelNode:SKLabelNode!
     let userDefaults:UserDefaults = UserDefaults.standard
+    var itemScore = 0
+    var itemScoreLabelNode: SKLabelNode!
     
-    // SKView上にシーンが表示されたときに呼ばれるメソッド
+    // 効果音
+    let sound = SKAction.playSoundFileNamed("cencel.mp3", waitForCompletion: true)
+    
+    
+    // SKView上にシーンが表示された時に呼ばれるメソッド
     override func didMove(to view: SKView) {
         
         // 重力を設定
@@ -45,12 +53,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         wallNode = SKNode()
         scrollNode.addChild(wallNode)
         
+        // ミミズのノード
+        mimizuNode = SKNode()
+        scrollNode.addChild(mimizuNode)
+        
         // 各種スプライトを生成する処理をメソッドに分割
         setupGround()
         setupCloud()
         setupWall()
         setupBird()
-        
+        setupMimizu()
         setupScoreLabel()
     }
     
@@ -184,6 +196,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
             
             // スプライトに物理演算を設定する
             under.physicsBody = SKPhysicsBody(rectangleOf: wallTexture.size())
+            under.physicsBody?.categoryBitMask = self.wallCategory
             
             // 衝突の時に動かないように設定する
             under.physicsBody?.isDynamic = false
@@ -291,6 +304,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
                 userDefaults.set(bestScore, forKey: "BEST")
                 userDefaults.synchronize()
             }
+        } else if (contact.bodyA.categoryBitMask & mimizuCategory) == mimizuCategory || (contact.bodyB.categoryBitMask & mimizuCategory) == mimizuCategory {
+            // アイテムと接触した
+            print("ItemGet!")
+            itemScore += 1
+            itemScoreLabelNode.text = "Item:\(itemScore)"
+            self.run(sound)
+            mimizuNode.removeAllChildren()
         } else {
             // 壁か地面と衝突した
             print("GameOver")
@@ -310,6 +330,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
     func restart() {
         score = 0
         scoreLabelNode.text = "Score:\(score)"
+        itemScore = 0
+        itemScoreLabelNode.text = "Item:\(itemScore)"
         
         bird.position = CGPoint(x: self.frame.size.width * 0.2, y:self.frame.size.height * 0.7)
         bird.physicsBody?.velocity = CGVector.zero
@@ -340,5 +362,77 @@ class GameScene: SKScene, SKPhysicsContactDelegate{
         let bestScore = userDefaults.integer(forKey: "BEST")
         bestScoreLabelNode.text = "Best Score:\(bestScore)"
         self.addChild(bestScoreLabelNode)
+        
+        itemScore = 0
+        itemScoreLabelNode = SKLabelNode()
+        itemScoreLabelNode.fontColor = UIColor.black
+        itemScoreLabelNode.position = CGPoint(x: 10, y: self.frame.size.height - 120)
+        itemScoreLabelNode.zPosition = 100
+        itemScoreLabelNode.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.left
+        itemScoreLabelNode.text = "Item:\(itemScore)"
+        self.addChild(itemScoreLabelNode)
+    }
+    
+    //ミミズのアイテム
+    func setupMimizu() {
+        // ミミズの画像を読み込む
+        let mimizuTexture = SKTexture(imageNamed: "mushi_mimizu")
+        mimizuTexture.filteringMode = .linear
+        
+        // 移動する距離を計算
+        let movingDistance = CGFloat(self.frame.size.width + mimizuTexture.size().width * 3)
+        
+        // 画面外まで移動するアクションを作成
+        let moveMimizu = SKAction.moveBy(x: -movingDistance, y: 0, duration:3)
+        
+        // 自身を取り除くアクションを作成
+        let removeMimizu = SKAction.removeFromParent()
+        
+        // 2つのアニメーションを順に実行するアクションを作成
+        let mimizuAnimation = SKAction.sequence([moveMimizu, removeMimizu])
+        
+        // ミミズを生成するアクションを作成
+        let createMimizuAnimation = SKAction.run({
+            // 画面のY軸の中央値
+            let center_y = self.frame.size.height / 2
+            // ミミズのY座標を上下ランダムにさせるときの最大値
+            let random_y_range = self.frame.size.height / 8
+            
+            // ミミズのY軸の下限
+            let mimizu_lowest_y = UInt32(center_y - mimizuTexture.size().height / 2 - random_y_range / 2)
+            
+            // 1〜random_y_rangeまでのランダムな整数を生成
+            let random_y = arc4random_uniform(UInt32(random_y_range))
+            
+            // Y軸の下限にランダムな値を足して、ミミズのY座標を決定
+            let mimizu_y = CGFloat(mimizu_lowest_y + random_y)
+            
+            // ミミズのスプライトを作成
+            let mimizu = SKSpriteNode(texture: mimizuTexture)
+            mimizu.position = CGPoint(x: self.frame.size.width + mimizuTexture.size().width * 3, y: mimizu_y)
+            mimizu.zPosition = -20
+            
+            // スプライトに物理演算を設定
+            mimizu.physicsBody = SKPhysicsBody(rectangleOf: mimizuTexture.size())
+            mimizu.physicsBody?.categoryBitMask = self.mimizuCategory
+            mimizu.physicsBody?.contactTestBitMask = self.birdCategory
+            
+            // 衝突の時に動かないよう設定
+            mimizu.physicsBody?.isDynamic = false
+            
+            // スプライトにアクションを設定する
+            mimizu.run(mimizuAnimation)
+            
+            self.mimizuNode.addChild(mimizu)
+        })
+        
+        // 次のミミズ作成までの時間待ちのアクションを作成
+        let waitAnimation = SKAction.wait(forDuration: 2)
+        
+        // ミミズを作成->時間待ち->ミミズを作成を無限に繰り返すアクションを作成
+        let repeatForeverAnimation = SKAction.repeatForever(SKAction.sequence([createMimizuAnimation, waitAnimation]))
+        
+        mimizuNode.run(repeatForeverAnimation)
     }
 }
+
